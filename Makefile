@@ -1,9 +1,9 @@
-VERSION=1.0
-NGINX_VERSION=1.22.1
-DOCKER_IMAGE=optionfactory/ubuntu22-nginx120:41
+VERSION=1.24.0-1
+NGINX_VERSION=1.24.0
+DOCKER_IMAGE=optionfactory/debian12-nginx120:53
 REPO_OWNER=optionfactory
 REPO_NAME=nginx-remove-server-header-module
-ARTIFACT_NAME=opfa_http_remove_server_header_module-$(VERSION)-$(NGINX_VERSION).so
+ARTIFACT_NAME=opfa_http_remove_server_header_module-$(VERSION).so
 
 
 build: nginx-$(NGINX_VERSION)
