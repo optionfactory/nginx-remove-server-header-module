@@ -1,6 +1,6 @@
-VERSION=1.26.1-1
-NGINX_VERSION=1.26.1
-DOCKER_IMAGE=optionfactory/debian12-nginx120:94
+VERSION=1.28.0-1
+NGINX_VERSION=1.28.0
+DOCKER_IMAGE=optionfactory/debian12-nginx120:112
 REPO_OWNER=optionfactory
 REPO_NAME=nginx-remove-server-header-module
 ARTIFACT_NAME=opfa_http_remove_server_header_module-$(VERSION).so
@@ -8,7 +8,8 @@ ARTIFACT_NAME=opfa_http_remove_server_header_module-$(VERSION).so
 
 build: nginx-$(NGINX_VERSION)
 	$(eval moduledir=${PWD})
-	$(eval nginx_flags=$(shell docker run -ti --rm --entrypoint nginx $(DOCKER_IMAGE) -V | grep configure | sed 's/configure arguments://'))
+	$(eval nginx_flags=$(shell docker run -ti --rm --entrypoint nginx $(DOCKER_IMAGE) -V | grep configure | sed 's/configure arguments://' | sed 's/-D_FORTIFY_SOURCE=2/-U_FORTIFY_SOURCE/'))
+	echo nginx_flags=${nginx_flags}
 	cd nginx-$(NGINX_VERSION) && ./configure --add-dynamic-module=$(moduledir) $(nginx_flags) && make modules
 	mv $(PWD)/nginx-$(NGINX_VERSION)/objs/opfa_http_remove_server_header_module.so dist/$(ARTIFACT_NAME)
 
@@ -41,5 +42,5 @@ run:
 	docker run -ti --rm --name nginx-with-remove-header-module \
 		-p 0.0.0.0:12000:80 \
         -v ${PWD}/nginx.conf:/etc/nginx/nginx.conf:ro \
-		-v ${PWD}/dist/$(ARTIFACT_NAME):/etc/nginx/modules/$(ARTIFACT_NAME) \
+		-v ${PWD}/dist/$(ARTIFACT_NAME):/etc/nginx/modules/opfa_http_remove_server_header_module.so \
         $(DOCKER_IMAGE)
