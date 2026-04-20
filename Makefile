@@ -1,6 +1,6 @@
-VERSION=1.28.3-1
-NGINX_VERSION=1.28.3
-DOCKER_IMAGE=optionfactory/debian13-nginx120:218
+VERSION=1.30.0-1
+NGINX_VERSION=1.30.0
+DOCKER_IMAGE=optionfactory/debian13-nginx130:219
 REPO_OWNER=optionfactory
 REPO_NAME=nginx-remove-server-header-module
 ARTIFACT_NAME=opfa_http_remove_server_header_module-$(VERSION).so
