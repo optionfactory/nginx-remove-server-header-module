@@ -1,9 +1,10 @@
-VERSION=1.30.2-1
-NGINX_VERSION=1.30.2
-DOCKER_IMAGE=optionfactory/debian13-nginx130:222
+VERSION=1.30.3-1
+NGINX_VERSION=1.30.3
+DOCKER_IMAGE=optionfactory/debian13-nginx130:224
 REPO_OWNER=optionfactory
 REPO_NAME=nginx-remove-server-header-module
 ARTIFACT_NAME=opfa_http_remove_server_header_module-$(VERSION).so
+
 
 
 build: nginx-$(NGINX_VERSION)
@@ -12,6 +13,9 @@ build: nginx-$(NGINX_VERSION)
 	echo nginx_flags=${nginx_flags}
 	cd nginx-$(NGINX_VERSION) && ./configure --add-dynamic-module=$(moduledir) $(nginx_flags) && make modules
 	mv $(PWD)/nginx-$(NGINX_VERSION)/objs/opfa_http_remove_server_header_module.so dist/$(ARTIFACT_NAME)
+
+deps:
+	sudo apt install build-essential libpcre3-dev zlib1g-dev libssl-dev
 
 nginx-${NGINX_VERSION}:
 	curl -# -j -k -L https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz | tar xz
