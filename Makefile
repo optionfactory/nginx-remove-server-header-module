@@ -1,6 +1,6 @@
-VERSION=1.30.3-1
-NGINX_VERSION=1.30.3
-DOCKER_IMAGE=optionfactory/debian13-nginx130:224
+VERSION=1.30.4-1
+NGINX_VERSION=1.30.4
+DOCKER_IMAGE=optionfactory/debian13-nginx130:228
 REPO_OWNER=optionfactory
 REPO_NAME=nginx-remove-server-header-module
 ARTIFACT_NAME=opfa_http_remove_server_header_module-$(VERSION).so
@@ -27,7 +27,7 @@ clean:
 clean-deps:
 	rm -rf nginx-*
 
-release:
+publish-github:
 	$(eval github_token=$(shell echo url=https://github.com/$(REPO_OWNER)/$(REPO_NAME) | git credential fill | grep '^password=' | sed 's/password=//'))
 	$(eval release_id=$(shell curl -X POST \
 		-H "Accept: application/vnd.github+json" \
