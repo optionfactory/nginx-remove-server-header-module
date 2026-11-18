@@ -1,5 +1,5 @@
-VERSION=1.30.6-1
-NGINX_VERSION=1.30.6
+VERSION=1.30.7-1
+NGINX_VERSION=1.30.7
 DOCKER_IMAGE=optionfactory/debian13-nginx130:256
 REPO_OWNER=optionfactory
 REPO_NAME=nginx-remove-server-header-module
