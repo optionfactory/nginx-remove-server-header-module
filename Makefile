@@ -1,6 +1,6 @@
 VERSION=1.30.8-1
 NGINX_VERSION=1.30.8
-DOCKER_IMAGE=optionfactory/debian13-nginx130:259
+DOCKER_IMAGE=optionfactory/debian13-nginx130:260
 REPO_OWNER=optionfactory
 REPO_NAME=nginx-remove-server-header-module
 ARTIFACT_NAME=$(REPO_NAME)-linux-amd64.so
