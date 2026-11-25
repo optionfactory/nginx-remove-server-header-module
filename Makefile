@@ -3,7 +3,7 @@ NGINX_VERSION=1.30.7
 DOCKER_IMAGE=optionfactory/debian13-nginx130:259
 REPO_OWNER=optionfactory
 REPO_NAME=nginx-remove-server-header-module
-ARTIFACT_NAME=opfa_http_remove_server_header_module-$(VERSION).so
+ARTIFACT_NAME=$(REPO_NAME)-linux-amd64.so
 
 
 
@@ -27,21 +27,23 @@ clean:
 clean-deps:
 	rm -rf nginx-*
 
-publish-github:
-	$(eval github_token=$(shell echo url=https://github.com/$(REPO_OWNER)/$(REPO_NAME) | git credential fill | grep '^password=' | sed 's/password=//'))
-	$(eval release_id=$(shell curl -X POST \
-		-H "Accept: application/vnd.github+json" \
-		-H "Authorization: Bearer $(github_token)" \
-		-H "X-GitHub-Api-Version: 2022-11-28" \
-		https://api.github.com/repos/$(REPO_OWNER)/$(REPO_NAME)/releases \
-	  	-d '{"tag_name":"v$(VERSION)","target_commitish":"master","name":"v$(VERSION)"}' | jq .id))
-	@curl -X POST \
-		-H "Accept: application/vnd.github+json" \
-		-H "Authorization: Bearer $(github_token)" \
-		-H "X-GitHub-Api-Version: 2022-11-28" \
-		-H "Content-Type: application/octet-stream" \
-		https://uploads.github.com/repos/$(REPO_OWNER)/$(REPO_NAME)/releases/$(release_id)/assets?name=$(ARTIFACT_NAME) \
-  		--data-binary "@dist/$(ARTIFACT_NAME)"
+# the release is tagged on the commit GitHub has: only a clean tree, with master pushed
+pushed:
+	@git diff --quiet HEAD || { echo "uncommitted changes: commit them first"; exit 1; }
+	@git fetch -q origin master
+	@[ "$$(git rev-parse HEAD)" = "$$(git rev-parse origin/master)" ] || { echo "master is not pushed: push it first"; exit 1; }
+
+publish-github: pushed build
+	@cd dist && sha256sum $(ARTIFACT_NAME) > SHA256SUMS
+	@gh release create "v$(VERSION)" \
+		"dist/$(ARTIFACT_NAME)" \
+		"dist/SHA256SUMS" \
+		--repo "$(REPO_OWNER)/$(REPO_NAME)" \
+		--title "v$(VERSION)" \
+		--target "master" \
+		--notes ""
+	-@rm dist/SHA256SUMS
+
 run:
 	docker run -ti --rm --name nginx-with-remove-header-module \
 		-p 0.0.0.0:12000:80 \
